@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source /etc/bashrc
+
+module load subread
+
+GTF=/projectnb/bf528/project_3/reference/rn4_refGene_20180308.gtf
+
+#Using for loop to output featureCounts for sample files
+for FILE in /projectnb/bf528/users/vangogh2022/project_3/data_curator/STAR_results/*.bam
+    do
+        samples=$(basename "$FILE")
+        OUT=/projectnb/bf528/users/vangogh2022/proj3_programmer/$samples.txt
+        featureCounts -T 16 -a $GTF -o $OUT $FILE
+    done
+

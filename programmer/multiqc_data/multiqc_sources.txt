@@ -1,0 +1,10 @@
+Module	Section	Sample Name	Source
+featureCounts	all_sections	SRR1178036	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1178036_Aligned.sortedByCoord.out.bam.txt.summary
+featureCounts	all_sections	SRR1178046	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1178046_Aligned.sortedByCoord.out.bam.txt.summary
+featureCounts	all_sections	SRR1178002	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1178002_Aligned.sortedByCoord.out.bam.txt.summary
+featureCounts	all_sections	SRR1177987	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1177987_Aligned.sortedByCoord.out.bam.txt.summary
+featureCounts	all_sections	SRR1178020	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1178020_Aligned.sortedByCoord.out.bam.txt.summary
+featureCounts	all_sections	SRR1177989	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1177989_Aligned.sortedByCoord.out.bam.txt.summary
+featureCounts	all_sections	SRR1177999	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1177999_Aligned.sortedByCoord.out.bam.txt.summary
+featureCounts	all_sections	SRR1177997	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1177997_Aligned.sortedByCoord.out.bam.txt.summary
+featureCounts	all_sections	SRR1177988	/projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts/SRR1177988_Aligned.sortedByCoord.out.bam.txt.summary

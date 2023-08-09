@@ -1,0 +1,164 @@
+---
+title: "Biologist"
+author: "go001"
+date: "3/31/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library("RColorBrewer")
+```
+
+
+# Obtained the top 200 most differently significant genes
+```{r}
+DEseq_result_file_Path = "~/Desktop/Current Tasks/ClassWork/Project 3 Translation/deseq_ahr.csv"
+deseq_result = read_csv(DEseq_result_file_Path)
+
+sorted = deseq_result %>% arrange(padj) %>% filter(padj < 0.05 ) %>% select(X1)
+write_csv(sorted,path = "~/Desktop/output_ahr.csv",col_names = F)
+```
+
+```{r}
+DEseq_result_file_Path = "~/Desktop/Current Tasks/ClassWork/Project 3 Translation/deseq_car.csv"
+deseq_result = read_csv(DEseq_result_file_Path)
+
+sorted = deseq_result %>% arrange(padj) %>% filter(padj < 0.05 ) %>% select(X1)
+write_csv(sorted,path = "~/Desktop/output_car.csv",col_names = F)
+```
+
+```{r}
+DEseq_result_file_Path = "~/Desktop/Current Tasks/ClassWork/Project 3 Translation/deseq_cyto.csv"
+deseq_result = read_csv(DEseq_result_file_Path)
+
+sorted = deseq_result %>% arrange(padj) %>% filter(padj < 0.05 ) %>% select(X1)
+write_csv(sorted,path = "~/Desktop/output_cyto.csv",col_names = F)
+```
+
+##########
+
+
+# Downloading the Data
+```{r}
+DEseq_result_file_Path = "~/Desktop/Current Tasks/ClassWork/Project 3 Translation/dsq_norm_ahr.csv"
+deseq_norm_count_ahr = read_csv(DEseq_result_file_Path)
+
+DEseq_result_file_Path = "~/Desktop/Current Tasks/ClassWork/Project 3 Translation/dsq_norm_car.csv"
+deseq_norm_count_car = read_csv(DEseq_result_file_Path)
+
+DEseq_result_file_Path = "~/Desktop/Current Tasks/ClassWork/Project 3 Translation/dsq_norm_cyto.csv"
+deseq_norm_count_cyto = read_csv(DEseq_result_file_Path)
+
+str(deseq_norm_count_ahr)
+str(deseq_norm_count_car)
+str(deseq_norm_count_cyto)
+
+colnames(deseq_norm_count_ahr)[1] = "Gene"
+colnames(deseq_norm_count_car)[1] = "Gene"
+colnames(deseq_norm_count_cyto)[1] = "Gene"
+
+all_samples = deseq_norm_count_ahr
+all_samples = full_join(all_samples,deseq_norm_count_car, by = "Gene")
+all_samples = full_join(all_samples,deseq_norm_count_cyto,by = "Gene")
+```
+
+Implement the following filters on the RMA normalized:
+
+1. Expressed in at least 20% of samples (i.e. for each gene, at least 20% of the gene-expression values must be > 𝑙𝑜𝑔2(15)).
+
+```{r Function}
+Expression_restriction <- function( data_set,min_level_expression = log(20,base = 2),min_sample_expression = .2){
+    matrix_data =data_set %>% 
+        filter( (rowSums(.[-1] > min_level_expression)/(ncol(.)-1)) >min_sample_expression )
+    return(matrix_data)
+}
+
+#Function for obtaining the median variance
+variance = function(x){
+    a = sum((x - mean(x))^2)/(length(x) - 1)
+    return(a)
+}
+
+sig_var_filter <- function( dataset, min_coeff_of_variation = 0.186 ){
+    # Variance for each row
+    # variance of every single gene
+    varList = apply(dataset[,-1], MARGIN = 1, FUN = variance)
+    # Finding the median for the varList
+    sigma02 = median(varList)
+    
+    # calculate the minimum test statistic 
+    testStat = qchisq(p = 0.01, df = ncol(dataset)-2,lower.tail = F)
+    df = ncol(dataset) - 2
+    testchi = df*varList/(sigma02)
+    
+    # Create Mask for the second filter
+    MaskF2 = testchi>testStat
+    ptable = 1 - pchisq(testchi,ncol(dataset)-2)
+    matrix_dataF2 = dataset[MaskF2,]
+    
+    varListF3 = varList[MaskF2]
+    mu = apply(matrix_dataF2[,-1], MARGIN = 1, FUN = mean)
+    MaskF3 = (sqrt(varListF3)/mu) > min_coeff_of_variation
+    matrix_dataF3 = matrix_dataF2[MaskF3,]
+    
+    return(matrix_dataF3)
+}
+```
+
+```{r filtering}
+
+# filters out the genes that do not have a high enough expression
+min_level_expression = log2(15)
+min_sample_expression = .3
+min_coefficient_of_variation = 0.3
+
+matrix_data_all = Expression_restriction(all_samples,min_level_expression,min_sample_expression)
+
+matrix_data_ahr_filter2 = sig_var_filter(matrix_data_all,min_coefficient_of_variation)
+```
+
+
+2. Have a variance significantly different from the median variance of all probe sets using a threshold of 𝑝<0.01 (hint: use a chi-squared test as shown in http://www.itl.nist.gov/div898/handbook/eda/section3/eda358.htm. 
+
+You will need to manually compute the test statistic for each gene and compare it to the chi-squared distribution with the correct number of degrees of freedom using the qchisq() function).
+
+Have a coefficient of variation > 0.186.
+
+```{r}
+# Create meta data for which sampek is which treatment
+colname_ahr = colnames(deseq_norm_count_ahr)
+ahr_samples = colname_ahr[2:length(colname_ahr)]
+
+colname_car = colnames(deseq_norm_count_car)
+car_samples = colname_car[2:length(colname_car)]
+
+colname_cyto = colnames(deseq_norm_count_cyto)
+cyto_samples = colname_cyto[2:length(colname_cyto)]
+
+all_samples_treat = data.frame(Sample = ahr_samples, treatment = "ahr")
+all_samples_treat = rbind(all_samples_treat,data.frame(Sample = car_samples, treatment = "car"))
+all_samples_treat = rbind(all_samples_treat,data.frame(Sample = cyto_samples, treatment = "cyto"))
+```
+
+
+```{r}
+
+
+#str(df.clustering_data)
+#col contains samples
+#row contains genes
+#df.clustering_data
+
+data_heatmap = as.matrix(matrix_data_ahr_filter2[,-1])
+rownames(data_heatmap) = matrix_data_ahr_filter2$Gene
+# Create with Heatmap
+#png(file="~/Desktop/heatmap.png",width = 700,height = 500, res =)
+heatmap(x = data_heatmap,ColSideColors = if_else(all_samples_treat$treatment == "ahr","#FA9858",if_else(all_samples_treat$treatment == "car","#6BADE6","#81E97A")), cexCol = 0.8, scale = "row")
+legend(x="bottomright", legend=c("1:Low", "2","3","4", "5:High"),fill=heat.colors(5),cex = 1,title = "Heat map")
+legend(x="topright", legend=c("AHR", "CAR", "Cyto"),fill=c("#FA9858","#6BADE6","#81E97A"),cex = 1,title = "MOA")
+
+```
+

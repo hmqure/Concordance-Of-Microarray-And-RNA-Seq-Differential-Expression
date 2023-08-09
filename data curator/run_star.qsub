@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#$ -P bf528
+#$ -cwd
+#$ -pe omp 16
+
+module load gcc/6.2.0 star/2.6.0c
+
+GENOMEDIR=/project/bf528/project_3/reference/rn4_STAR
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1177997_1.fastq.gz samples/SRR1177997_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1177997_ --outSAMtype BAM SortedByCoordinate
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1177999_1.fastq.gz samples/SRR1177999_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1177999_ --outSAMtype BAM SortedByCoordinate
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1178002_1.fastq.gz samples/SRR1178002_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1178002_ --outSAMtype BAM SortedByCoordinate
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1178020_1.fastq.gz samples/SRR1178020_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1178020_ --outSAMtype BAM SortedByCoordinate
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1178036_1.fastq.gz samples/SRR1178036_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1178036_ --outSAMtype BAM SortedByCoordinate
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1178046_1.fastq.gz samples/SRR1178046_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1178046_ --outSAMtype BAM SortedByCoordinate
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1177987_1.fastq.gz samples/SRR1177987_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1177987_ --outSAMtype BAM SortedByCoordinate
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1177988_1.fastq.gz samples/SRR1177988_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1177988_ --outSAMtype BAM SortedByCoordinate
+
+STAR --genomeDir $GENOMEDIR --readFilesIn samples/SRR1177989_1.fastq.gz samples/SRR1177989_2.fastq.gz --runThreadN 16 --readFilesCommand zcat --outFileNamePrefix STAR_results/SRR1177989_ --outSAMtype BAM SortedByCoordinate

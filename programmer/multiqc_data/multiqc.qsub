@@ -1,0 +1,14 @@
+#!/bin/bash
+
+source /etc/bashrc
+
+pip install conda
+pip install multiqc
+
+#load python
+module load python3/3.7.9
+
+# load multiqc:
+module load multiqc/1.10.1
+
+multiqc /projectnb2/bf528/users/vangogh2022/proj3_programmer/filecounts

@@ -1,0 +1,25 @@
+#!/bin/bash -l
+
+#$ -P bf528
+#$ -cwd
+#$ -j y
+#$ -pe mpi_16_tasks_per_node 16
+
+echo "Running job $JOB_ID"
+echo "Started: $(date +%F)"
+echo "Running in directory: $PWD"
+
+# your commands here
+module load fastqc
+
+fastqc -o fastqc_output samples/SRR1177997_1.fastq.gz samples/SRR1177997_2.fastq.gz
+fastqc -o fastqc_output samples/SRR1177999_1.fastq.gz samples/SRR1177999_2.fastq.gz
+fastqc -o fastqc_output samples/SRR1178002_1.fastq.gz samples/SRR1178002_2.fastq.gz
+fastqc -o fastqc_output samples/SRR1178020_1.fastq.gz samples/SRR1178020_2.fastq.gz
+fastqc -o fastqc_output samples/SRR1178036_1.fastq.gz samples/SRR1178036_2.fastq.gz
+fastqc -o fastqc_output samples/SRR1178046_1.fastq.gz samples/SRR1178046_2.fastq.gz
+fastqc -o fastqc_output samples/SRR1177987_1.fastq.gz samples/SRR1177987_2.fastq.gz
+fastqc -o fastqc_output samples/SRR1177988_1.fastq.gz samples/SRR1177988_2.fastq.gz
+fastqc -o fastqc_output samples/SRR1177989_1.fastq.gz samples/SRR1177989_2.fastq.gz
+
+echo "Job finished: $(date +%F)"
